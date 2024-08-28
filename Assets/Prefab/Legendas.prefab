@@ -222,13 +222,14 @@ GameObject:
   - component: {fileID: 2396346034069794131}
   - component: {fileID: 121012246747996844}
   - component: {fileID: 7047652474142686218}
+  - component: {fileID: -4196595600567885537}
   m_Layer: 5
   m_Name: Legendas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &4812264152885982205
 RectTransform:
   m_ObjectHideFlags: 0
@@ -284,7 +285,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 1
+  m_UiScaleMode: 0
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 600}
@@ -312,3 +313,24 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &-4196595600567885537
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9061062814404987869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20b76a86fd4c457419fa2815d5710504, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  subtitleCanvas: {fileID: 0}
+  subtitleText: {fileID: 0}
+  player: {fileID: 0}
+  otherCharacter: {fileID: 0}
+  fadeDuration: 1
+  subtitles:
+  - Who are you?
+  - Come with me...sister.
+  - Wait!
