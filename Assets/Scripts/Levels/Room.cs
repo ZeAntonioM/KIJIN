@@ -30,12 +30,8 @@ public class Room : MonoBehaviour
             if (objects[i] != null) {
 
                 objects[i].SetActive(_status);
-
-                if (objects[i].GetComponent<Rigidbody2D>() != null){
-                    objects[i].transform.position = initialPosition[i];
-                    objects[i].transform.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
-                    objects[i].transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
-                }
+                objects[i].transform.position = initialPosition[i];
+                objects[i].transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
 
 
             }
