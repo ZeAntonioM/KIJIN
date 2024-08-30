@@ -9,8 +9,8 @@ public class PlayerMovement : MonoBehaviour
     private Animator animator;
     private SpriteRenderer spriteRenderer;
     private BoxCollider2D boxCollider;
-    private float wallJumpCooldown;
     private float horizontalInput;
+    private bool onLadder;
 
     [Header("Layers")]
     [SerializeField] private LayerMask groundLayer;
@@ -25,7 +25,20 @@ public class PlayerMovement : MonoBehaviour
         boxCollider = GetComponent<BoxCollider2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>(); 
-        wallJumpCooldown = 0;
+        onLadder = false;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision) {
+        if (collision.gameObject.CompareTag("Ladder")) {
+            onLadder = true;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Ladder")) {
+            onLadder = false;
+        }
     }
 
     private void Update()
@@ -34,7 +47,7 @@ public class PlayerMovement : MonoBehaviour
 
         if ((OnWall() || OnObject()) && !isBroken() && !OnGround()) {
 
-            if (Input.GetKey(KeyCode.Space) && wallJumpCooldown > 0.5f) {
+            if (Input.GetKey(KeyCode.Space)) {
                 
                 //Decide which way to jump
                 RaycastHit2D wallLeft = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.left, 0.1f, wallLayer);
@@ -53,7 +66,6 @@ public class PlayerMovement : MonoBehaviour
                 }
 
                 animator.Play("CAROL_JUMP");
-                wallJumpCooldown = 0;
 
             }
 
@@ -74,20 +86,18 @@ public class PlayerMovement : MonoBehaviour
 
             if (Input.GetKey(KeyCode.Space)) {
                 
-                if (OnGround()) {
+                Debug.Log("Jump");
+                if (onLadder) {
+                    body.velocity = new Vector2(horizontalInput * speed, jumpForce * 0.2f);
+                }
+                else if (OnGround()) {
                     body.velocity = new Vector2(horizontalInput * speed, jumpForce);
-                    animator.Play("CAROL_JUMP");
                 }
 
-                else if (onLadder()) {
-                    body.velocity = new Vector2(horizontalInput * speed, jumpForce*2);
-                }
 
             }
 
         }
-
-        wallJumpCooldown += Time.deltaTime;
     }
 
 
@@ -116,12 +126,6 @@ public class PlayerMovement : MonoBehaviour
     {
         RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.left, 0.1f, brokenLayer);
         RaycastHit2D hit2 = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.right, 0.1f, brokenLayer);
-        return hit.collider != null || hit2.collider != null;
-    }
-
-    private bool onLadder(){
-        RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.left, 0.1f, ladderLayer);
-        RaycastHit2D hit2 = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.right, 0.1f, ladderLayer);
         return hit.collider != null || hit2.collider != null;
     }
 
