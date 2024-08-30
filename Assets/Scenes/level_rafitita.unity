@@ -1934,7 +1934,6 @@ MonoBehaviour:
   nextRoom: {fileID: 1003427197}
   cam: {fileID: 519420032}
   doorType: 0
-  scallingButtons: {fileID: 0}
   doorBlock: {fileID: 0}
 --- !u!50 &70677843
 Rigidbody2D:
@@ -2440,8 +2439,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1bc3e79b93f2fe45977ee96d2bdee4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textMesh: {fileID: 1467128794}
-  fadeDuration: 1
 --- !u!61 &100571989
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -5320,6 +5317,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pauseMenuUI: {fileID: 909480099}
+  timer: {fileID: 0}
 --- !u!1 &298885383
 GameObject:
   m_ObjectHideFlags: 0
@@ -10587,7 +10585,6 @@ MonoBehaviour:
   nextRoom: {fileID: 244368329}
   cam: {fileID: 519420032}
   doorType: 2
-  scallingButtons: {fileID: 0}
   doorBlock: {fileID: 1395431235}
 --- !u!50 &687641807
 Rigidbody2D:
@@ -10706,8 +10703,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1bc3e79b93f2fe45977ee96d2bdee4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textMesh: {fileID: 1536317595}
-  fadeDuration: 1
 --- !u!61 &691950509
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -12881,7 +12876,6 @@ MonoBehaviour:
   nextRoom: {fileID: 2039025903}
   cam: {fileID: 519420032}
   doorType: 2
-  scallingButtons: {fileID: 0}
   doorBlock: {fileID: 1136103057}
 --- !u!50 &828794736
 Rigidbody2D:
@@ -13434,17 +13428,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e102d717bb9f634ea499cdb8d87eac5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialogueText: {fileID: 1045863098}
-  dialogueLines:
-  - 'Carol: Who..who are you?'
-  - 'Stranger: ...'
-  - 'Stranger: ...'
-  - ...
-  - Cristiano Ronaldo SUII
-  typingSpeed: 0.05
-  typingSound: {fileID: 874861118}
-  fadeOutDuration: 1.5
-  continueIcon: {fileID: 129671197}
 --- !u!114 &874861120
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14411,7 +14394,6 @@ MonoBehaviour:
   nextRoom: {fileID: 1276190171}
   cam: {fileID: 519420032}
   doorType: 0
-  scallingButtons: {fileID: 0}
   doorBlock: {fileID: 0}
 --- !u!50 &901409765
 Rigidbody2D:
@@ -16685,7 +16667,6 @@ MonoBehaviour:
   nextRoom: {fileID: 531913956}
   cam: {fileID: 519420032}
   doorType: 1
-  scallingButtons: {fileID: 0}
   doorBlock: {fileID: 0}
 --- !u!50 &1013619928
 Rigidbody2D:
@@ -19518,7 +19499,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7011e5335b012b544879e86d704d5b40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uiPanel: {fileID: 874861116}
 --- !u!1 &1153929908
 GameObject:
   m_ObjectHideFlags: 0
@@ -19600,7 +19580,6 @@ MonoBehaviour:
   nextRoom: {fileID: 1031850867}
   cam: {fileID: 519420032}
   doorType: 1
-  scallingButtons: {fileID: 0}
   doorBlock: {fileID: 0}
 --- !u!50 &1157867821
 Rigidbody2D:
@@ -20322,9 +20301,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49bc1732d4f988845928ebde05420124, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  climbSpeed: 12
-  climbHeight: 12
-  climbIcon: {fileID: 1827392518}
 --- !u!1 &1247381049
 GameObject:
   m_ObjectHideFlags: 0
@@ -21114,7 +21090,6 @@ MonoBehaviour:
   nextRoom: {fileID: 2049251363}
   cam: {fileID: 519420032}
   doorType: 1
-  scallingButtons: {fileID: 0}
   doorBlock: {fileID: 0}
 --- !u!50 &1279249997
 Rigidbody2D:
@@ -21757,7 +21732,6 @@ MonoBehaviour:
   nextRoom: {fileID: 1139858305}
   cam: {fileID: 519420032}
   doorType: 1
-  scallingButtons: {fileID: 0}
   doorBlock: {fileID: 0}
 --- !u!50 &1322755356
 Rigidbody2D:
@@ -24577,11 +24551,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7904302583233573453, guid: 50654b3df916842489ac09221a5ff33f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 176.4
+      value: -2.7
       objectReference: {fileID: 0}
     - target: {fileID: 7904302583233573453, guid: 50654b3df916842489ac09221a5ff33f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 54.21
+      value: -1.9
       objectReference: {fileID: 0}
     - target: {fileID: 7904302583233573453, guid: 50654b3df916842489ac09221a5ff33f, type: 3}
       propertyPath: m_LocalPosition.z
@@ -26168,7 +26142,6 @@ MonoBehaviour:
   nextRoom: {fileID: 1218729079}
   cam: {fileID: 519420032}
   doorType: 1
-  scallingButtons: {fileID: 0}
   doorBlock: {fileID: 0}
 --- !u!50 &1582882113
 Rigidbody2D:
@@ -27351,7 +27324,6 @@ MonoBehaviour:
   nextRoom: {fileID: 602674328}
   cam: {fileID: 519420032}
   doorType: 1
-  scallingButtons: {fileID: 0}
   doorBlock: {fileID: 0}
 --- !u!50 &1656106296
 Rigidbody2D:
@@ -33736,18 +33708,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e102d717bb9f634ea499cdb8d87eac5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dialogueText: {fileID: 18695186}
-  dialogueLines:
-  - Who am I?
-  - Why is it so dark?
-  - Where am I?
-  - ....
-  - Where is everyone?
-  - ...
-  typingSpeed: 0.05
-  typingSound: {fileID: 2084814210}
-  fadeOutDuration: 1.5
-  continueIcon: {fileID: 1367570301}
 --- !u!114 &2084814208
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33894,12 +33854,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f95ed9f37e5d3f344b2765b5829f76ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  image: {fileID: 2084814208}
-  sprites:
-  - {fileID: 21300000, guid: cd27dec04c9492c48a797905718d57a8, type: 3}
-  - {fileID: 21300000, guid: a9d1ef9ecd55a5a4085074979e578cda, type: 3}
-  - {fileID: 21300000, guid: f1ec7f0c5868f544483efa9069ad22a9, type: 3}
-  frameRate: 0.1
 --- !u!1 &2101381490
 GameObject:
   m_ObjectHideFlags: 0

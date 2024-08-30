@@ -37,14 +37,17 @@ public class PlayerMovement : MonoBehaviour
             if (Input.GetKey(KeyCode.Space) && wallJumpCooldown > 0.5f) {
                 
                 //Decide which way to jump
-                RaycastHit2D left = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, new Vector2(-1, 0), 0.1f, wallLayer);
-                RaycastHit2D right = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, new Vector2(1, 0), 0.1f, wallLayer);
+                RaycastHit2D wallLeft = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.left, 0.1f, wallLayer);
+                RaycastHit2D wallRight = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.right, 0.1f, wallLayer);
 
-                if (left.collider != null) {
+                RaycastHit2D boxLeft = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.left, 0.1f, objectLayer);
+                RaycastHit2D boxRight = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.right, 0.1f, objectLayer);
+
+                if (wallLeft.collider != null || boxLeft.collider != null) {
                     body.velocity = new Vector2(speed, jumpForce);
                     spriteRenderer.flipX = true;
                 }
-                else if (right.collider != null) {
+                else if (wallRight.collider != null || boxRight.collider != null) {
                     spriteRenderer.flipX = false;
                     body.velocity = new Vector2(-speed, jumpForce);
                 }
@@ -98,27 +101,27 @@ public class PlayerMovement : MonoBehaviour
 
     private bool OnWall()
     {
-        RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, new Vector2(-1, 0), 0.1f, wallLayer);
-        RaycastHit2D hit2 = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, new Vector2(1, 0), 0.1f, wallLayer);
+        RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.left, 0.1f, wallLayer);
+        RaycastHit2D hit2 = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.right, 0.1f, wallLayer);
         return hit.collider != null || hit2.collider != null;
     }
 
     private bool OnObject(){
-        RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, new Vector2(-1, 0), 0.1f, objectLayer);
-        RaycastHit2D hit2 = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, new Vector2(1, 0), 0.1f, objectLayer);
+        RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.left, 0.1f, objectLayer);
+        RaycastHit2D hit2 = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.right, 0.1f, objectLayer);
         return hit.collider != null || hit2.collider != null;
     }
 
     private bool isBroken()
     {
-        RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, new Vector2(-1, 0), 0.1f, brokenLayer);
-        RaycastHit2D hit2 = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, new Vector2(1, 0), 0.1f, brokenLayer);
+        RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.left, 0.1f, brokenLayer);
+        RaycastHit2D hit2 = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.right, 0.1f, brokenLayer);
         return hit.collider != null || hit2.collider != null;
     }
 
     private bool onLadder(){
-        RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, new Vector2(-1, 0), 0.1f, ladderLayer);
-        RaycastHit2D hit2 = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, new Vector2(1, 0), 0.1f, ladderLayer);
+        RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.left, 0.1f, ladderLayer);
+        RaycastHit2D hit2 = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.right, 0.1f, ladderLayer);
         return hit.collider != null || hit2.collider != null;
     }
 

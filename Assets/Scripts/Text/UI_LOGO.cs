@@ -3,8 +3,8 @@ using UnityEngine.UI;
 
 public class UI_LOGO : MonoBehaviour
 {
-    public Image image;            // Referência ao componente Image da UI
-    public Sprite[] sprites;       // Array de sprites que serão usados na animação
+    public Image image;            // Referï¿½ncia ao componente Image da UI
+    public Sprite[] sprites;       // Array de sprites que serï¿½o usados na animaï¿½ï¿½o
     public float frameRate = 0.1f; // Tempo entre cada frame (em segundos)
 
     private int currentFrame;
@@ -28,7 +28,7 @@ public class UI_LOGO : MonoBehaviour
         {
             timer -= frameRate;
 
-            // Avançar para o próximo sprite
+            // Avanï¿½ar para o prï¿½ximo sprite
             currentFrame = (currentFrame + 1) % sprites.Length;
 
             // Atualizar o sprite do componente Image

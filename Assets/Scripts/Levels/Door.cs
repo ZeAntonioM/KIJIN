@@ -14,10 +14,8 @@ public class Door : MonoBehaviour
     [SerializeField] private Transform nextRoom;
     [SerializeField] private Transform cam;
     [SerializeField] private DoorType doorType;
-    [SerializeField] private Transform scallingButtons;
     [SerializeField] private GameObject doorBlock;
 
-    private ScaleInteraction scaleInteraction;
     private Transform nRoom;
     private Transform pRoom;
     private Transform player; 
@@ -26,8 +24,7 @@ public class Door : MonoBehaviour
         nRoom = nextRoom.parent.parent;
         pRoom = previousRoom.parent.parent;
         player = GameObject.FindGameObjectWithTag("Player").transform;
-        scaleInteraction = scallingButtons.GetComponent<ScaleInteraction>();
-    }
+        }
 
     private void OnTriggerEnter2D(Collider2D collision) {
 
@@ -42,7 +39,7 @@ public class Door : MonoBehaviour
                 ) {
                 cameraController.MoveToNewRoom(nextRoom);
 
-                scaleInteraction.Reset();
+                //scaleInteraction.Reset();
                 player.GetComponent<PlayerMovement>().Reset();
 
                 if((doorType == DoorType.Up) && (doorBlock != null)){
@@ -59,7 +56,7 @@ public class Door : MonoBehaviour
 
                 cameraController.MoveToNewRoom(previousRoom);
                 
-                scaleInteraction.Reset();
+                //scaleInteraction.Reset();
                 player.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
 
                 pRoom.GetComponent<Room>().ActivateRoom(true);
