@@ -6122,7 +6122,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &374221418
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -31935,6 +31935,10 @@ PrefabInstance:
       propertyPath: initialCheckpoint
       value: 
       objectReference: {fileID: 1681340074}
+    - target: {fileID: 2477780746271594922, guid: 50654b3df916842489ac09221a5ff33f, type: 3}
+      propertyPath: m_GravityScale
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 4010131782963517604, guid: 50654b3df916842489ac09221a5ff33f, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3

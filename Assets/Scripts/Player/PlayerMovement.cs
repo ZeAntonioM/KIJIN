@@ -11,7 +11,6 @@ public class PlayerMovement : MonoBehaviour
     private BoxCollider2D boxCollider;
     private float wallJumpCooldown;
     private float horizontalInput;
-    private float verticalInput;
 
     [Header("Layers")]
     [SerializeField] private LayerMask groundLayer;
@@ -25,69 +24,72 @@ public class PlayerMovement : MonoBehaviour
         body = GetComponent<Rigidbody2D>();
         boxCollider = GetComponent<BoxCollider2D>();
         animator = GetComponent<Animator>();
-        spriteRenderer = GetComponent<SpriteRenderer>(); // Obter o componente SpriteRenderer
+        spriteRenderer = GetComponent<SpriteRenderer>(); 
+        wallJumpCooldown = 0;
     }
 
     private void Update()
     {
         horizontalInput = Input.GetAxis("Horizontal");
-        verticalInput = Input.GetAxis("Vertical");
 
-        // Ajustar o flip do sprite de acordo com a direção
-        if (horizontalInput > 0.01f)
-        {
-            spriteRenderer.flipX = true;
-            animator.SetBool("isWalking", true);
-        }
-        else if (horizontalInput < -0.01f)
-        {
-            spriteRenderer.flipX = false;
-            animator.SetBool("isWalking", true);
-        }
-        else
-        {
-            animator.SetBool("isWalking", false);
-            animator.Play("CAROL_IDLE");
-        }
+        if ((OnWall() || OnObject()) && !isBroken() && !OnGround()) {
 
-        if (wallJumpCooldown > 0.2f)
-        {
-            body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
+            if (Input.GetKey(KeyCode.Space) && wallJumpCooldown > 0.5f) {
+                
+                //Decide which way to jump
+                RaycastHit2D left = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, new Vector2(-1, 0), 0.1f, wallLayer);
+                RaycastHit2D right = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, new Vector2(1, 0), 0.1f, wallLayer);
 
-            if (onLadder()) {
-                if (verticalInput > 0.01f) {
-                    body.velocity = new Vector2(body.velocity.x, verticalInput * speed);
+                if (left.collider != null) {
+                    body.velocity = new Vector2(speed, jumpForce);
+                    spriteRenderer.flipX = true;
                 }
-                else if (verticalInput < -0.01f) {
-                    body.velocity = new Vector2(body.velocity.x, verticalInput * speed);
+                else if (right.collider != null) {
+                    spriteRenderer.flipX = false;
+                    body.velocity = new Vector2(-speed, jumpForce);
                 }
+
+                animator.Play("CAROL_JUMP");
+                wallJumpCooldown = 0;
+
             }
-            else if (!isBroken() && (OnWall() || OnObject()) && !IsGrounded()  )
-            {
-                if (verticalInput > 0.01f) {
-                    body.velocity = new Vector2(body.velocity.x, verticalInput * speed * 0.5f);
-                }
-                else if (verticalInput < -0.01f) {
-                    body.velocity = new Vector2(body.velocity.x, verticalInput * speed * 0.5f);
-                }
-            }
-            else body.gravityScale = 7;
 
-            if (Input.GetKey(KeyCode.Space)) Jump();
         }
-        else wallJumpCooldown += Time.deltaTime;
+
+        else {
+
+            if (horizontalInput == 0f) {
+                animator.Play("CAROL_IDLE");
+            }
+            else if (OnGround()){
+                animator.SetBool("isWalking", true);
+            
+                spriteRenderer.flipX = horizontalInput > 0.01f;
+                body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
+
+            }
+
+            if (Input.GetKey(KeyCode.Space)) {
+                
+                if (OnGround()) {
+                    body.velocity = new Vector2(horizontalInput * speed, jumpForce);
+                    animator.Play("CAROL_JUMP");
+                }
+
+                else if (onLadder()) {
+                    body.velocity = new Vector2(horizontalInput * speed, jumpForce*2);
+                }
+
+            }
+
+        }
+
+        wallJumpCooldown += Time.deltaTime;
     }
 
-    private void Jump()
-    {
-        if (IsGrounded())
-        {
-            body.velocity = new Vector2(body.velocity.x, jumpForce);
-            animator.Play("CAROL_JUMP");
-        }
-    }
 
-    private bool IsGrounded()
+
+    private bool OnGround()
     {
         RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.down, 0.1f, groundLayer);
         RaycastHit2D hit2 = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.down, 0.1f, objectLayer);
