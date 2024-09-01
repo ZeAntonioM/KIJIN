@@ -9,9 +9,9 @@ public class PlayerMovement : MonoBehaviour
     private Animator animator;
     private SpriteRenderer spriteRenderer;
     private BoxCollider2D boxCollider;
-    private float wallJumpCooldown;
     private float horizontalInput;
-    private float verticalInput;
+    private bool onLadder;
+    private bool isWallJumping;
 
     [Header("Layers")]
     [SerializeField] private LayerMask groundLayer;
@@ -25,69 +25,106 @@ public class PlayerMovement : MonoBehaviour
         body = GetComponent<Rigidbody2D>();
         boxCollider = GetComponent<BoxCollider2D>();
         animator = GetComponent<Animator>();
-        spriteRenderer = GetComponent<SpriteRenderer>(); // Obter o componente SpriteRenderer
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        onLadder = false;
+        isWallJumping = false;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Ladder"))
+        {
+            onLadder = true;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Ladder"))
+        {
+            onLadder = false;
+        }
     }
 
     private void Update()
     {
         horizontalInput = Input.GetAxis("Horizontal");
-        verticalInput = Input.GetAxis("Vertical");
 
-        // Ajustar o flip do sprite de acordo com a direção
-        if (horizontalInput > 0.01f)
+        if (OnWall() && !isBroken() && !OnGround())
         {
-            spriteRenderer.flipX = true;
-            animator.SetBool("isWalking", true);
+
+            if (Input.GetKey(KeyCode.Space))
+            {
+
+                //Decide which way to jump
+                RaycastHit2D wallLeft = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.left, 0.1f, wallLayer);
+                RaycastHit2D wallRight = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.right, 0.1f, wallLayer);
+
+                if (wallLeft.collider != null)
+                {
+                    body.velocity = new Vector2(speed, jumpForce);
+                    spriteRenderer.flipX = true;
+                    isWallJumping = true;
+                }
+                else if (wallRight.collider != null)
+                {
+                    spriteRenderer.flipX = false;
+                    body.velocity = new Vector2(-speed, jumpForce);
+                    isWallJumping = true;
+                }
+
+                animator.Play("CAROL_JUMP");
+                animator.SetBool("isWalking", false);
+
+            }
+
         }
-        else if (horizontalInput < -0.01f)
-        {
-            spriteRenderer.flipX = false;
-            animator.SetBool("isWalking", true);
-        }
+
         else
         {
-            animator.SetBool("isWalking", false);
-            animator.Play("CAROL_IDLE");
-        }
 
-        if (wallJumpCooldown > 0.2f)
-        {
-            body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
-
-            if (onLadder()) {
-                if (verticalInput > 0.01f) {
-                    body.velocity = new Vector2(body.velocity.x, verticalInput * speed);
-                }
-                else if (verticalInput < -0.01f) {
-                    body.velocity = new Vector2(body.velocity.x, verticalInput * speed);
-                }
-            }
-            else if (!isBroken() && (OnWall() || OnObject()) && !IsGrounded()  )
+            if (OnGround())
             {
-                if (verticalInput > 0.01f) {
-                    body.velocity = new Vector2(body.velocity.x, verticalInput * speed * 0.5f);
-                }
-                else if (verticalInput < -0.01f) {
-                    body.velocity = new Vector2(body.velocity.x, verticalInput * speed * 0.5f);
-                }
+                isWallJumping = false;
             }
-            else body.gravityScale = 7;
 
-            if (Input.GetKey(KeyCode.Space)) Jump();
+            if (horizontalInput == 0f)
+            {
+                animator.Play("CAROL_IDLE");
+                animator.SetBool("isWalking", false);
+            }
+            else if (OnGround())
+            {
+                animator.SetBool("isWalking", true);
+
+                spriteRenderer.flipX = horizontalInput > 0.01f;
+                body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
+
+            }
+
+            if (Input.GetKey(KeyCode.Space))
+            {
+
+                Debug.Log("Jump");
+                if (onLadder)
+                {
+                    body.velocity = new Vector2(horizontalInput * speed, jumpForce * 0.2f);
+                }
+                else if (OnGround())
+                {
+                    body.velocity = new Vector2(horizontalInput * speed, jumpForce);
+                }
+
+                animator.SetBool("isWalking", false);
+
+            }
+
         }
-        else wallJumpCooldown += Time.deltaTime;
     }
 
-    private void Jump()
-    {
-        if (IsGrounded())
-        {
-            body.velocity = new Vector2(body.velocity.x, jumpForce);
-            animator.Play("CAROL_JUMP");
-        }
-    }
 
-    private bool IsGrounded()
+
+    private bool OnGround()
     {
         RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.down, 0.1f, groundLayer);
         RaycastHit2D hit2 = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.down, 0.1f, objectLayer);
@@ -96,32 +133,28 @@ public class PlayerMovement : MonoBehaviour
 
     private bool OnWall()
     {
-        RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, new Vector2(-1, 0), 0.1f, wallLayer);
-        RaycastHit2D hit2 = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, new Vector2(1, 0), 0.1f, wallLayer);
+        RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.left, 0.1f, wallLayer);
+        RaycastHit2D hit2 = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.right, 0.1f, wallLayer);
         return hit.collider != null || hit2.collider != null;
     }
 
-    private bool OnObject(){
-        RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, new Vector2(-1, 0), 0.1f, objectLayer);
-        RaycastHit2D hit2 = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, new Vector2(1, 0), 0.1f, objectLayer);
+    private bool OnObject()
+    {
+        RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.left, 0.1f, objectLayer);
+        RaycastHit2D hit2 = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.right, 0.1f, objectLayer);
         return hit.collider != null || hit2.collider != null;
     }
 
     private bool isBroken()
     {
-        RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, new Vector2(-1, 0), 0.1f, brokenLayer);
-        RaycastHit2D hit2 = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, new Vector2(1, 0), 0.1f, brokenLayer);
-        return hit.collider != null || hit2.collider != null;
-    }
-
-    private bool onLadder(){
-        RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, new Vector2(-1, 0), 0.1f, ladderLayer);
-        RaycastHit2D hit2 = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, new Vector2(1, 0), 0.1f, ladderLayer);
+        RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.left, 0.1f, brokenLayer);
+        RaycastHit2D hit2 = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.right, 0.1f, brokenLayer);
         return hit.collider != null || hit2.collider != null;
     }
 
 
-    public void Reset() {
+    public void Reset()
+    {
         transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
         jumpForce = 20;
         speed = 10;
