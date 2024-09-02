@@ -19,8 +19,6 @@ public class ScaleInteraction : MonoBehaviour
 
     [Header("Scalling Options")]
     [SerializeField] private float scalingSpeed = 0.001f;
-    [SerializeField] private AudioClip scaleUpSound;
-    [SerializeField] private AudioClip scaleDownSound;
     [SerializeField] private AudioClip scaleLimitReachedClip;
     [SerializeField] private AudioClip selectedBoxSound;
    // public GameObject empurrarsom;
@@ -29,22 +27,24 @@ public class ScaleInteraction : MonoBehaviour
     private Transform playerTransform;
     private Transform selectedBox;
     private GameObject outlineAnim;
-    private Vector3 lastBoxPosition;
+    private Vector2 ultimaPosicao;
     private bool isBoxMoving;
     private bool hasPlayedSlideSound;
     private string scaleMode;
 
+    public GameObject som1;
+    public GameObject som2;
+    public GameObject empurrar;
+
     private Collider2D boxCollider;
-    private Collider2D playerCollider;
+    
 
     private void Awake()
     {
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         audioSource = GetComponent<AudioSource>();
         boxCollider = GetComponent<Collider2D>();
-
-        if (playerTransform != null)
-            playerCollider = playerTransform.GetComponent<Collider2D>();
+        ultimaPosicao = transform.position; // Define a posição inicial
 
         ResetState();
     }
@@ -53,7 +53,22 @@ public class ScaleInteraction : MonoBehaviour
     {
         DetectBoxUnderMouse(); // Detecta a caixa sob o cursor e gerencia a seleção
         HandleScalingInput();  // Lida com a lógica de escalonamento quando a caixa está selecionada
-       // HandleBoxMovement();   // Lida com a movimentação e reprodução do som de empurrar
+
+        // Verifica se o objeto mudou de posição no eixo X
+        bool movendoEmX = Mathf.Abs(transform.position.x - ultimaPosicao.x) > 0.01f;
+
+        // Ativa ou desativa o GameObject baseado na movimentação e na colisão com o jogador
+        if (movendoEmX && EstaColidindoComPlayer())
+        {
+            empurrar.SetActive(true);
+        }
+        else
+        {
+            empurrar.SetActive(false);
+        }
+
+       // ultimaPosicao = transform.position; // Atualiza a última posição
+
     }
 
     private void DetectBoxUnderMouse()
@@ -96,15 +111,19 @@ public class ScaleInteraction : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0) && CanScale(ScaleMode.AUMENTAR))
         {
-            StartScaling(ScaleMode.AUMENTAR, scaleUpSound);
+            StartScaling(ScaleMode.AUMENTAR, null);
+            som1.SetActive(true);
         }
         else if (Input.GetMouseButtonDown(1) && CanScale(ScaleMode.DIMINUIR))
         {
-            StartScaling(ScaleMode.DIMINUIR, scaleDownSound);
+            StartScaling(ScaleMode.DIMINUIR, null);
+            som2.SetActive(true);
         }
         else if (Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1))
         {
             StopScaling();
+            som1.SetActive(false);
+            som2.SetActive(false);
         }
 
         if (scaleMode.Equals(ScaleMode.AUMENTAR))
@@ -128,34 +147,6 @@ public class ScaleInteraction : MonoBehaviour
         scaleMode = ScaleMode.NONE;
     }
 
-   /* private void HandleBoxMovement()
-    {
-        bool isMovingX = Mathf.Abs(transform.position.x - lastBoxPosition.x) > 0.01f;
-
-        if (isMovingX && IsPlayerTouchingBox())
-        {
-            
-                empurrarsom.SetActive(true);
-           
-        }
-        else
-        {
-          
-                empurrarsom.SetActive(false);
-            }
-
-        lastBoxPosition = transform.position;
-    }
-
-    private bool IsPlayerTouchingBox()
-    {
-        if (boxCollider != null && playerCollider != null)
-        {
-            return boxCollider.IsTouching(playerCollider);
-
-        }
-        return false;
-    } */
 
     private bool CanScale(string mode)
     {
@@ -199,10 +190,27 @@ public class ScaleInteraction : MonoBehaviour
         }
     }
 
+    // Verifica se o jogador está colidindo com o objeto
+    private bool EstaColidindoComPlayer()
+    {
+        // Checa colisão com qualquer objeto que tenha a tag "Player"
+        Collider2D[] colisores = Physics2D.OverlapBoxAll(transform.position, boxCollider.bounds.size, 0);
+
+        foreach (Collider2D colisor in colisores)
+        {
+            if (colisor.CompareTag("Player"))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     private void ResetState()
     {
         outlineAnim = null;
-        lastBoxPosition = transform.position;
+        ultimaPosicao = transform.position;
         isBoxMoving = false;
         hasPlayedSlideSound = false;
         scaleMode = ScaleMode.NONE;
