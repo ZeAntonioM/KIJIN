@@ -2,22 +2,23 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
-using Unity.VisualScripting;
 
 public class CutsceneFinal : MonoBehaviour
 {
-    public PlayerMovement playerMovement;    // Referência ao script de movimento do jogador
-    public GameObject animatedObject;        // GameObject com a animação
-    public GameObject fadingObject;          // GameObject que desaparecerá gradualmente (Sprite)
-    public GameObject fadePanel;             // Painel que aparecerá gradualmente
-    public GameObject creditsText;           // Texto de créditos
-    public GameObject backToMenuButton;      // Botão para voltar ao menu
+    public PlayerMovement playerMovement;    // Referï¿½ncia ao script de movimento do jogador
+    public PauseMenu pauseMenu;
+    public GameObject animatedObject;        // GameObject com a animaï¿½ï¿½o
+    public GameObject fadingObject;          // GameObject que desaparecerï¿½ gradualmente (Sprite)
+    public GameObject fadePanel;             // Painel que aparecerï¿½ gradualmente
+    public GameObject creditsText;           // Texto de crï¿½ditos
+    public GameObject backToMenuButton;      // Botï¿½o para voltar ao menu
     public float fadeSpeed = 5f;             // Velocidade de fade
-    public float animationDuration = 5f;     // Duração da animação (ajuste conforme necessário)
-    public AudioClip endSound;               // Som que será tocado após a animação
+    public float animationDuration = 5f;     // Duraï¿½ï¿½o da animaï¿½ï¿½o (ajuste conforme necessï¿½rio)
+    public AudioClip endSound;               // Som que serï¿½ tocado apï¿½s a animaï¿½ï¿½o
+    public AudioClip ghost;                  // Som que serï¿½ tocado durante o fade-out
 
-    private Animator animator;               // Referência ao Animator do objeto animado
-    private AudioSource audioSource;         // Referência ao AudioSource para tocar o som
+    private Animator animator;               // Referï¿½ncia ao Animator do objeto animado
+    private AudioSource audioSource;         // Referï¿½ncia ao AudioSource para tocar o som
     public AudioSource camerasom;
 
     private void Start()
@@ -26,11 +27,10 @@ public class CutsceneFinal : MonoBehaviour
         creditsText.SetActive(false);
         backToMenuButton.SetActive(false);
         animatedObject.SetActive(false); // Deixa o objeto animado desativado inicialmente
-        
 
         // Inicializa o Animator e o AudioSource do objeto animado
         animator = animatedObject.GetComponent<Animator>();
-        
+
         audioSource = animatedObject.AddComponent<AudioSource>();
         audioSource.clip = endSound;
         audioSource.playOnAwake = false; // Evita que o som toque automaticamente
@@ -45,34 +45,47 @@ public class CutsceneFinal : MonoBehaviour
             if (playerMovement != null)
             {
                 playerMovement.enabled = false; // Desativa o movimento do jogador
-                playeranimator.SetBool("isWalking", false); // Altera o parâmetro isWalking para false
+                playeranimator.SetBool("isWalking", false); // Altera o parï¿½metro isWalking para false
             }
 
-            StartCoroutine(CutsceneSequence()); // Inicia a sequência da cutscene
+            if (pauseMenu != null)
+            {
+                pauseMenu.enabled = false; // Desativa o menu de pausa
+            }
+            
+            StartCoroutine(CutsceneSequence()); // Inicia a sequï¿½ncia da cutscene
         }
     }
 
     private IEnumerator CutsceneSequence()
     {
         animatedObject.SetActive(true);      // Ativa o objeto animado
-        animator.Play("Gaiola");           // Toca a animação chamada "BOX_IDLE"
+        animator.Play("Gaiola");           // Toca a animaï¿½ï¿½o chamada "BOX_IDLE"
 
-        yield return new WaitForSeconds(animationDuration); // Espera o tempo da animação (ajuste conforme necessário)
+        yield return new WaitForSeconds(animationDuration); // Espera o tempo da animaï¿½ï¿½o (ajuste conforme necessï¿½rio)
 
-        audioSource.Play(); // Toca o som após o término da animação
+        audioSource.Play(); // Toca o som apï¿½s o tï¿½rmino da animaï¿½ï¿½o
 
-        yield return StartCoroutine(FadeOutObject(fadingObject)); // Desaparece gradualmente o sprite
+        // Inicia a reproduï¿½ï¿½o do som "ghost" e faz o fade-out do objeto
+        AudioSource ghostAudioSource = gameObject.AddComponent<AudioSource>();
+        ghostAudioSource.clip = ghost;
+        ghostAudioSource.loop = true; // Faz o som repetir, se necessï¿½rio
+        ghostAudioSource.Play();
+
+        yield return StartCoroutine(FadeOutObject(fadingObject, ghostAudioSource)); // Desaparece gradualmente o sprite e controla o som
+
+        ghostAudioSource.Stop(); // Para o som "ghost" apï¿½s o fade-out
 
         fadePanel.SetActive(true);
         yield return StartCoroutine(FadeInObject(fadePanel)); // Aparecer gradualmente o painel de fade
 
         creditsText.SetActive(true);
-        yield return new WaitForSeconds(3f); // Tempo para exibir os créditos (ajuste conforme necessário)
+        yield return new WaitForSeconds(3f); // Tempo para exibir os crï¿½ditos (ajuste conforme necessï¿½rio)
 
-        backToMenuButton.SetActive(true); // Exibe o botão para voltar ao menu
+        backToMenuButton.SetActive(true); // Exibe o botï¿½o para voltar ao menu
     }
 
-    private IEnumerator FadeOutObject(GameObject obj)
+    private IEnumerator FadeOutObject(GameObject obj, AudioSource ghostAudioSource)
     {
         SpriteRenderer spriteRenderer = obj.GetComponent<SpriteRenderer>();
         Color color = spriteRenderer.color;
@@ -93,7 +106,7 @@ public class CutsceneFinal : MonoBehaviour
         Color color = panelImage.color;
         color.a = 0;
         panelImage.color = color;
-           camerasom.volume = 0;
+        camerasom.volume = 0;
 
         while (color.a < 1)
         {
@@ -102,6 +115,4 @@ public class CutsceneFinal : MonoBehaviour
             yield return null;
         }
     }
-
- 
 }

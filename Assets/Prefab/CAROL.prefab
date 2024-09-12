@@ -15,7 +15,6 @@ GameObject:
   - component: {fileID: 8680046973347148611}
   - component: {fileID: 2643467087290943237}
   - component: {fileID: 6813460196136378569}
-  - component: {fileID: 4613057029929193977}
   m_Layer: 0
   m_Name: CAROL
   m_TagString: Player
@@ -206,6 +205,12 @@ MonoBehaviour:
   objectLayer:
     serializedVersion: 2
     m_Bits: 256
+  brokenLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  ladderLayer:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!114 &6813460196136378569
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -218,16 +223,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 557b1af3fc0409844b0493eee6a52854, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &4613057029929193977
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3757553310119619357}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b355a73199dc2c4aa54eba4a64e9a0a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  startingHealth: 1
